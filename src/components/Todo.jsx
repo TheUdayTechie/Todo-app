@@ -1,88 +1,85 @@
-import React, { useEffect, useRef, useState } from 'react'
-import todo_icon from '../assets/todo_icon.png'
-import TodoItems from './TodoItems'
+import React, { useEffect, useRef, useState } from 'react';
+import todo_icon from '../assets/todo_icon.png';
+import TodoItems from './TodoItems';
 
-const Todo = () => {
-  const [todoList, setTodoList] = useState(localStorage.getItem('todos') ? JSON.parse(localStorage.getItem('todos')) : [])
+const Todo = ({ darkMode }) => {
+  const [todoList, setTodoList] = useState(
+    localStorage.getItem('todos') ? JSON.parse(localStorage.getItem('todos')) : []
+  );
   const inputRef = useRef();
 
   const add = () => {
-    const inputText = inputRef.current.value.trim(); // Get input value
+    const inputText = inputRef.current.value.trim();
+    if (inputText === "") return;
 
-    if (inputText === "") {
-      return null;
-    }
-
-    const newTodo = {
-      id: Date.now(),
-      text: inputText,
-      isComplete: false,
-    }
-    setTodoList((prev) => [...prev, newTodo])
-    inputRef.current.value = ""; // Clear input field after adding
-  }
+    const newTodo = { id: Date.now().toString(), text: inputText, isComplete: false };
+    setTodoList((prev) => [...prev, newTodo]);
+    inputRef.current.value = "";
+  };
 
   const deleteTodo = (id) => {
     setTodoList((prevTodos) => prevTodos.filter((todo) => todo.id !== id));
   };
 
-  const toggle=(id)=>{
-    setTodoList((prevTodos)=>{
-      return prevTodos.map((todo)=>{
-        if(todo.id === id){
-          return {...todo, isComplete: !todo.isComplete}
-        }
-        return todo;
-      })
-    })
-  }
+  const toggle = (id) => {
+    setTodoList((prevTodos) =>
+      prevTodos.map((todo) =>
+        todo.id === id ? { ...todo, isComplete: !todo.isComplete } : todo
+      )
+    );
+  };
 
-useEffect(()=>{
-  localStorage.setItem('todos', JSON.stringify(todoList))
-},[todoList])
+  const clearAll = () => {
+    setTodoList([]);
+  };
+
+  useEffect(() => {
+    localStorage.setItem('todos', JSON.stringify(todoList));
+  }, [todoList]);
 
   return (
-    <div className='bg-white place-self-center w-11/12 max-w-md
-    flex flex-col p-7 min-h-[550px] rounded-3xl'>
-      <div className='flex items-center mt-7 gap-2'>
-        <img className='w-8' src={todo_icon} alt="" />
-        <h1 className='text-3xl font-semibold'>To-Do List</h1>
+    <div className={`w-11/12 max-w-md p-7 min-h-[550px] rounded-3xl shadow-lg ${darkMode ? 'bg-gray-800' : 'bg-white'}`}>
+      <div className='flex items-center justify-between'>
+        <div className='flex items-center gap-2'>
+          <img className='w-8' src={todo_icon} alt="todo icon" />
+          <h1 className='text-3xl font-semibold'>To-Do List</h1>
+        </div>
+        {todoList.length > 0 && (
+          <button onClick={clearAll} className='text-sm text-red-500 hover:text-red-700'>Clear All</button>
+        )}
       </div>
 
+      {/* Input Section */}
       <div className="flex items-center my-4 bg-gray-200 rounded-full px-4 py-2 w-full max-w-lg mx-auto">
         <input
-          ref={inputRef} // Set ref here
-          className="bg-transparent border-0 outline-none flex-1 h-12 pl-4 pr-2
-          placeholder:text-slate-600 text-sm sm:text-base"
+          ref={inputRef}
+          className="bg-transparent border-0 outline-none flex-1 h-12 pl-4 pr-2 placeholder:text-slate-600 text-sm sm:text-base"
           type="text"
           placeholder="Add your task"
         />
         <button
           onClick={add}
-          className="border-none rounded-full bg-orange-600 text-white text-sm sm:text-lg 
-          font-medium cursor-pointer px-4 sm:px-6 py-2 sm:py-3"
+          className="rounded-full bg-orange-600 text-white text-sm sm:text-lg font-medium px-4 sm:px-6 py-2 sm:py-3 shadow-md hover:bg-orange-500 transition"
         >
           Add +
         </button>
       </div>
 
+      {/* Todo List (Without Drag & Drop) */}
       <div>
-
-        {todoList.map((item, index) => (
+        {todoList.map((item) => (
           <TodoItems
-            key={index}
+            key={item.id}
             text={item.text}
-            id={item.id}  
+            id={item.id}
             isComplete={item.isComplete}
             deleteTodo={deleteTodo}
             toggle={toggle}
           />
         ))}
-
-
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default Todo;
