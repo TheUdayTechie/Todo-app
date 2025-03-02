@@ -65,7 +65,7 @@ const Todo = ({ darkMode }) => {
         </button>
       </div>
 
-      {/* Todo List (Without Drag & Drop) */}
+      
       <div>
         {todoList.map((item) => (
           <TodoItems
