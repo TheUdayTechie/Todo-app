@@ -50,24 +50,23 @@ const Todo = ({ darkMode }) => {
       </div>
 
       {/* Input Section */}
-      <div className="flex items-center my-4 bg-gray-200 rounded-full px-4 py-2 w-full max-w-lg mx-auto">
+      <div className={`flex items-center my-4 rounded-full px-4 py-2 w-full max-w-lg mx-auto ${darkMode ? "bg-gray-700" : "bg-gray-200"}`}>
         <input
           ref={inputRef}
-          className="bg-transparent border-0 outline-none flex-1 h-12 pl-4 pr-2 placeholder:text-slate-600 
-          text-sm sm:text-base"
+          className={`border-0 outline-none flex-1 h-12 pl-4 pr-2 text-sm sm:text-base 
+    ${darkMode ? "bg-gray-700 text-white placeholder-gray-400" : "bg-transparent text-black placeholder-gray-600"}`}
           type="text"
           placeholder="Add your task"
         />
         <button
           onClick={add}
-          className="rounded-full bg-orange-600 text-white text-sm sm:text-lg font-medium px-4 
-          sm:px-6 py-2 sm:py-3 shadow-md hover:bg-orange-500 transition"
+          className="rounded-full bg-orange-600 text-white text-sm sm:text-lg font-medium px-4 sm:px-6 py-2 sm:py-3 shadow-md hover:bg-orange-500 transition"
         >
           Add +
         </button>
       </div>
 
-      
+
       <div>
         {todoList.map((item) => (
           <TodoItems
